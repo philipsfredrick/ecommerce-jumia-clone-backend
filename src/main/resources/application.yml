@@ -1,0 +1,56 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:${db_port_number:5432}/${db:jumia-clone}
+    password: ${db_password:}
+    username: ${db_username:}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        show-sql: false
+  main:
+    allow-circular-references: true
+#    banner-mode: off
+#    lazy-initialization: true
+#  security:
+#    user:
+#      name: scott
+#        password: tiger
+#  application:
+#    name: jumia-clone
+#    version: 1.0.0
+#    description: Jumia Clone
+
+cloud_name: ${cloud_name}
+api_key: ${api_key}
+api_secret: ${api_secret}
+
+servlet:
+  multipart:
+    max-file-size: 10MB
+    max-request-size: 10MB
+
+jwt:
+  adminKey: ${jwt.adminKey}
+  expireTime: ${jwt.expireTime}
+  refreshTime: ${jwt.refreshTime}
+#nonso.app.jwtSecret: ${jwt.adminKey}
+#nonso.app.jwtExpirationMs: ${jwt.expireTime}
+#nonso.app.jwtRefreshExpirationMs: ${jwt.refreshTime}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  info:
+    env:
+      enabled: true
+
