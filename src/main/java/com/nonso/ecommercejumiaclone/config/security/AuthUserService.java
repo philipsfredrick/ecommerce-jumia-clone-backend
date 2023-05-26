@@ -3,13 +3,11 @@ package com.nonso.ecommercejumiaclone.config.security;
 import com.nonso.ecommercejumiaclone.entities.User;
 import com.nonso.ecommercejumiaclone.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 
 @Service
 @AllArgsConstructor
