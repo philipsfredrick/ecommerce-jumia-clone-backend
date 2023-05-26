@@ -1,10 +1,12 @@
-server:
-  port: 8080
 spring:
+  application:
+    name: jumia-clone
+  #    banner-mode: off
+
   datasource:
-    url: jdbc:postgresql://localhost:${db_port_number:5432}/${db:jumia-clone}
-    password: ${db_password:}
-    username: ${db_username:}
+    url: jdbc:postgresql://localhost:5440/jumia-clone
+    username: ${db_username}
+    password: ${db_password}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -18,16 +20,10 @@ spring:
         show-sql: false
   main:
     allow-circular-references: true
-#    banner-mode: off
-#    lazy-initialization: true
-#  security:
-#    user:
-#      name: scott
-#        password: tiger
-#  application:
-#    name: jumia-clone
-#    version: 1.0.0
-#    description: Jumia Clone
+
+
+server:
+  port: 8080
 
 cloud_name: ${cloud_name}
 api_key: ${api_key}
@@ -38,13 +34,14 @@ servlet:
     max-file-size: 10MB
     max-request-size: 10MB
 
+#jwt:
+#  adminKey: ${jwt.adminKey}
+#  expireTime: ${jwt.expireTime}
+#  refreshTime: ${jwt.refreshTime}
 jwt:
-  adminKey: ${jwt.adminKey}
-  expireTime: ${jwt.expireTime}
-  refreshTime: ${jwt.refreshTime}
-#nonso.app.jwtSecret: ${jwt.adminKey}
-#nonso.app.jwtExpirationMs: ${jwt.expireTime}
-#nonso.app.jwtRefreshExpirationMs: ${jwt.refreshTime}
+  token:
+    secret_key: 645266556A586E3272357538782F413F4428472B4B6250655368566B59703373
+
 management:
   endpoints:
     web:
@@ -54,3 +51,6 @@ management:
     env:
       enabled: true
 
+#pay_stack_url: ${pay_stack_url:}
+#pay_stack_verify: ${pay_stack_verify:}
+#pay_stack_secret: ${pay_stack_secret:}
