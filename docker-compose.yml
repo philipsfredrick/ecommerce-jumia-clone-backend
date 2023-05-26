@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  postgresql:
+    image: 'bitnami/postgresql:latest'
+    ports:
+      - '5440:5432'
+    volumes:
+      - ./database/postgresql-persistence.cnf:/bitnami/postgresql
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=1234
+      - POSTGRESQL_DATABASE=jumia-clone
+
+    restart: unless-stopped
