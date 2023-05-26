@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.exceptions;
+package com.nonso.ecommercejumiaclone.exception;
 
 public class CustomNotFoundException extends RuntimeException{
 
