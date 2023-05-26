@@ -1,30 +1,46 @@
 package com.nonso.ecommercejumiaclone.controllers;
 
 import com.nonso.ecommercejumiaclone.entities.Cart;
-import com.nonso.ecommercejumiaclone.payload.request.AddToCartDto;
-import com.nonso.ecommercejumiaclone.payload.response.ApiResponse;
+import com.nonso.ecommercejumiaclone.entities.CartItem;
+import com.nonso.ecommercejumiaclone.payload.response.CartItemResource;
+import com.nonso.ecommercejumiaclone.payload.response.CartResource;
+import com.nonso.ecommercejumiaclone.payload.response.RegistrationResponse;
 import com.nonso.ecommercejumiaclone.service.CartService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/v1/auth")
-@AllArgsConstructor
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/cart")
 public class CartController {
 
     private final CartService cartService;
 
-    @PostMapping("/carts")
-    public ResponseEntity<ApiResponse> addToCart(@RequestBody AddToCartDto addToCartDto) throws Exception {
-        return ResponseEntity.ok(cartService.addToCart(addToCartDto));
+    @GetMapping("/{userId}")
+    public ResponseEntity<CartResource> getCartByUserId(@PathVariable("userId") Long userId) {
+        return new ResponseEntity<>(cartService.getCartByUserId(userId), OK);
     }
 
-    @GetMapping("/carts")
-    public ResponseEntity<ApiResponse<List<Cart>>> viewCartProducts() throws Exception {
-        return ResponseEntity.ok(cartService.viewCart());
+    @PostMapping("/items")
+    public ResponseEntity<CartResource> addItemToCart(@RequestParam Long productId,
+                                                      @RequestParam(value = "quantity", required = false, defaultValue = "1") Integer quantity) {
+       return new ResponseEntity<>(cartService.addItemToCart(productId, quantity),OK);
+    }
+
+    @DeleteMapping("/{cartId}/items/{cartItemId}")
+    public ResponseEntity<CartResource> removeItemFromCart(@PathVariable("cartId") Long cartId, @PathVariable("cartItemId") Long cartItemId) {
+        return new ResponseEntity<>(cartService.removeItemFromCart(cartId, cartItemId), OK);
+    }
+
+    @GetMapping("/{cartId}/items")
+    public ResponseEntity<List<CartItemResource>> getAllCartItems(@PathVariable("cartId") Long cartId) {
+        return new ResponseEntity<>(cartService.getAllCartItems(cartId), OK);
     }
 
 }
