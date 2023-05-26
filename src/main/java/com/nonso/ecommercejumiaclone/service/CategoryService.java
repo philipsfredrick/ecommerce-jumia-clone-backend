@@ -1,23 +1,21 @@
 package com.nonso.ecommercejumiaclone.service;
 
 import com.nonso.ecommercejumiaclone.entities.Category;
-import com.nonso.ecommercejumiaclone.payload.request.CategoryDto;
-import com.nonso.ecommercejumiaclone.payload.response.ApiResponse;
+import com.nonso.ecommercejumiaclone.payload.request.CategoryRequest;
+import com.nonso.ecommercejumiaclone.payload.response.CategoryResource;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public interface CategoryService {
 
-    ApiResponse<Category> createCategory(CategoryDto categoryDto, MultipartFile file) throws IOException;
+    CategoryResource createCategory(CategoryRequest categoryRequest, MultipartFile file);
 
-    List<Category> getAllCategories();
+    List<CategoryResource> getAllCategories();
     Category findCategoryByName(String categoryName);
-    Optional<Category> findCategoryById(Long categoryId);
+    Category findCategoryById(Long categoryId);
 
-    ApiResponse updateCategory(Long categoryId, CategoryDto categoryDto, MultipartFile file) throws IOException;
+    CategoryResource updateCategory(Long categoryId, CategoryRequest categoryRequest, MultipartFile file);
 
     void deleteCategoryById(Long categoryId);
 }
