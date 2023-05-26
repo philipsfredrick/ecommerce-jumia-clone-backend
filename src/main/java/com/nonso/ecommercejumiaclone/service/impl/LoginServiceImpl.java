@@ -3,76 +3,76 @@ package com.nonso.ecommercejumiaclone.service.impl;
 import com.nonso.ecommercejumiaclone.config.security.JwtService;
 import com.nonso.ecommercejumiaclone.entities.User;
 import com.nonso.ecommercejumiaclone.entities.enums.UserRole;
+import com.nonso.ecommercejumiaclone.exception.UnAuthorizedException;
 import com.nonso.ecommercejumiaclone.payload.request.LoginRequest;
-import com.nonso.ecommercejumiaclone.payload.response.AuthResponse;
+import com.nonso.ecommercejumiaclone.payload.response.AuthenticationResponse;
 import com.nonso.ecommercejumiaclone.repository.UserRepository;
 import com.nonso.ecommercejumiaclone.service.LoginService;
-import com.nonso.ecommercejumiaclone.utils.CloudinaryService;
-import jakarta.mail.AuthenticationFailedException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import static com.nonso.ecommercejumiaclone.payload.ErrorCode.INVALID_CREDENTIALS;
+import static java.lang.String.format;
+
+@Slf4j
 @Service
 @AllArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
-
-
     private final JwtService jwtService;
-    /**
-     * @param loginRequest
-     * @return
-     * @throws Exception
-     */
+
+    private final PasswordEncoder passwordEncoder;
+
+
     @Override
-    public AuthResponse loginUser(LoginRequest loginRequest) throws Exception {
+    @Transactional
+    public AuthenticationResponse loginUser(LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()
+                    ));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(), loginRequest.getPassword()
-        ));
+            User user = userRepository.findUserByEmailAndRole(loginRequest.getEmail(), UserRole.USER);
 
-        if (!auth.isAuthenticated() ) {
-            throw new AuthenticationFailedException("Wrong email or password");
+            var userToken = jwtService.generateToken(user);
+
+            return new AuthenticationResponse(userToken, user.getName(), user.getAvatarUrl(), user.getRole());
+        } catch (Exception e) {
+            log.error(format("An error occurred while authenticating login request, please contact support. " +
+                    "Possible reasons: %s", e.getLocalizedMessage()));
+            throw new UnAuthorizedException("Invalid email/or password", INVALID_CREDENTIALS);
         }
-        User user = userRepository.findUserByEmailAndRole(loginRequest.getEmail(), UserRole.USER);
-        if (user == null){
-            throw new UsernameNotFoundException("User with email" + loginRequest.getEmail() + " not found");
-        }
-        if(!user.getRole().equals(UserRole.USER)){
-            throw new AuthenticationFailedException("Unauthorised");
-        }
-
-        String userToken = jwtService.generateToken(user);
-
-        return new AuthResponse(userToken, user.getName(), user.getAvatarUrl());
     }
 
     @Override
-    public AuthResponse loginVendor(LoginRequest loginRequest) throws Exception {
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(), loginRequest.getPassword()
-        ));
+    @Transactional
+    public AuthenticationResponse loginVendor(LoginRequest loginRequest) {
+       try {
+           Authentication authentication = authenticationManager.authenticate(
+                   new UsernamePasswordAuthenticationToken(
+                           loginRequest.getEmail(), loginRequest.getPassword()
+                   ));
+           SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        if (!auth.isAuthenticated() ) {
-            throw new AuthenticationFailedException("Wrong email or password");
-        }
-        User vendor = userRepository.findUserByEmailAndRole(loginRequest.getEmail(), UserRole.VENDOR);
-        if (vendor == null){
-            throw new UsernameNotFoundException("User with email" + loginRequest.getEmail() + " not found");
-        }
-        if(!vendor.getRole().equals(UserRole.VENDOR)){
-            throw new AuthenticationFailedException("Unauthorised");
-        }
+           User vendor = userRepository.findUserByEmailAndRole(loginRequest.getEmail(), UserRole.VENDOR);
 
-        String vendorToken = jwtService.generateToken(vendor);
+           var vendorToken = jwtService.generateToken(vendor);
 
-        return new AuthResponse(vendorToken, vendor.getName(), vendor.getAvatarUrl());
+           return new AuthenticationResponse(vendorToken, vendor.getName(), vendor.getAvatarUrl(), vendor.getRole());
+       } catch (Exception e) {
+           log.info(format("An error occurred while authenticating vendor login request, please contact support. " +
+                   "Possible reasons: %s", e.getLocalizedMessage()));
+           throw new UnAuthorizedException("Invalid email/or password", INVALID_CREDENTIALS);
+       }
     }
 }

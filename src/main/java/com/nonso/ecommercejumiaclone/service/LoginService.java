@@ -1,11 +1,11 @@
 package com.nonso.ecommercejumiaclone.service;
 
 import com.nonso.ecommercejumiaclone.payload.request.LoginRequest;
-import com.nonso.ecommercejumiaclone.payload.response.AuthResponse;
+import com.nonso.ecommercejumiaclone.payload.response.AuthenticationResponse;
 
 public interface LoginService {
 
-    AuthResponse loginUser(LoginRequest loginRequest) throws Exception;
+    AuthenticationResponse loginUser(LoginRequest loginRequest);
 
-    AuthResponse loginVendor(LoginRequest loginRequest) throws Exception;
+    AuthenticationResponse loginVendor(LoginRequest loginRequest);
 }
