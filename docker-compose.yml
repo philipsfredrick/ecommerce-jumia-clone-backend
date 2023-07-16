@@ -6,10 +6,11 @@ services:
     ports:
       - '5440:5432'
     volumes:
-      - ./database/postgresql-persistence.cnf:/bitnami/postgresql
+      - 'postgresql_data:/bitnami/postgresql'
     environment:
       - POSTGRESQL_USERNAME=postgres
       - POSTGRESQL_PASSWORD=1234
       - POSTGRESQL_DATABASE=jumia-clone
 
-    restart: unless-stopped
+volumes:
+  postgresql_data:
