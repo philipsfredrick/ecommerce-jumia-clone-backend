@@ -2,7 +2,7 @@ package com.nonso.ecommercejumiaclone.exception.handler;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nonso.ecommercejumiaclone.payload.ErrorCode;
+import com.nonso.ecommercejumiaclone.dto.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

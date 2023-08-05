@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.service.impl;
+package com.nonso.ecommercejumiaclone.service;
 
 
 import com.nonso.ecommercejumiaclone.entities.User;
@@ -7,7 +7,6 @@ import com.nonso.ecommercejumiaclone.exception.JumiaCloneException;
 import com.nonso.ecommercejumiaclone.dto.request.UserSignUpRequest;
 import com.nonso.ecommercejumiaclone.dto.request.VendorSignUpRequest;
 import com.nonso.ecommercejumiaclone.repository.UserRepository;
-import com.nonso.ecommercejumiaclone.service.RegisterService;
 import com.nonso.ecommercejumiaclone.utils.CloudinaryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +21,11 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class RegisterServiceImpl implements RegisterService {
-    private final CloudinaryService cloudinaryService;
+public class RegisterService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CloudinaryService cloudinaryService;
 
-    @Override
     @Transactional
     public void createUser(UserSignUpRequest request, MultipartFile file) {
         try {
@@ -35,9 +33,9 @@ public class RegisterServiceImpl implements RegisterService {
             User user = User.builder()
                     .name(request.getName())
                     .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
                     .avatarUrl(fileUrl)
                     .role(UserRole.USER)
+                    .password(passwordEncoder.encode(request.getPassword()))
                     .build();
             userRepository.save(user);
         } catch (Exception e) {
@@ -48,7 +46,6 @@ public class RegisterServiceImpl implements RegisterService {
         }
     }
 
-    @Override
     @Transactional
     public void createVendor(VendorSignUpRequest request, MultipartFile file) {
         try {
@@ -56,9 +53,9 @@ public class RegisterServiceImpl implements RegisterService {
             User vendor = User.builder()
                     .name(request.getName())
                     .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
                     .avatarUrl(fileUrl)
                     .role(UserRole.VENDOR)
+                    .password(passwordEncoder.encode(request.getPassword()))
                     .build();
             userRepository.save(vendor);
         } catch (Exception e) {

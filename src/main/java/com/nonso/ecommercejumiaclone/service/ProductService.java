@@ -1,22 +1,16 @@
-package com.nonso.ecommercejumiaclone.service.impl;
+package com.nonso.ecommercejumiaclone.service;
 
-import com.nonso.ecommercejumiaclone.config.security.Principal;
 import com.nonso.ecommercejumiaclone.converter.ProductToResourceConverter;
 import com.nonso.ecommercejumiaclone.entities.Category;
 import com.nonso.ecommercejumiaclone.entities.Product;
 import com.nonso.ecommercejumiaclone.entities.User;
-import com.nonso.ecommercejumiaclone.entities.enums.UserRole;
 import com.nonso.ecommercejumiaclone.exception.CustomNotFoundException;
 import com.nonso.ecommercejumiaclone.exception.ProductServiceException;
-import com.nonso.ecommercejumiaclone.exception.UnAuthorizedException;
 import com.nonso.ecommercejumiaclone.dto.request.ProductRequest;
 import com.nonso.ecommercejumiaclone.dto.response.PaginatedProductDetailResource;
 import com.nonso.ecommercejumiaclone.dto.response.ProductResource;
 import com.nonso.ecommercejumiaclone.repository.CategoryRepository;
 import com.nonso.ecommercejumiaclone.repository.ProductRepository;
-import com.nonso.ecommercejumiaclone.repository.UserRepository;
-import com.nonso.ecommercejumiaclone.service.CredentialService;
-import com.nonso.ecommercejumiaclone.service.ProductService;
 import com.nonso.ecommercejumiaclone.utils.CloudinaryService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -25,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,35 +32,28 @@ import static java.lang.String.format;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class ProductServiceImpl implements ProductService {
-    private final UserRepository userRepository;
+public class ProductService {
     private final CloudinaryService cloudinaryService;
     private final CredentialService credentialService;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductToResourceConverter productToResourceConverter;
 
-    @Override
     @Transactional
-    public ProductResource uploadProduct(ProductRequest productRequest, MultipartFile file) {
+    public ProductResource uploadProduct(ProductRequest productRequest, MultipartFile file, HttpServletRequest httpServletRequest) {
         try {
-            String userEmail = Principal.getLoggedInUserDetails();
-            User vendor = userRepository.findByEmail(userEmail).orElseThrow(
-                    ()-> new UsernameNotFoundException("User with " + userEmail + " not found")
-            );
-            if (vendor.getRole().name().equalsIgnoreCase(UserRole.USER.name())) {
-                throw new UnAuthorizedException("Unauthorised access for this action");
-            }
+            User vendor = credentialService.getUserAccount(httpServletRequest);
+            credentialService.validateUser(vendor, List.of("VENDOR"));
 
             String imageUrl = cloudinaryService.uploadImage(file);
             Category category = categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(
                     ()-> new CustomNotFoundException("Category not found")
             );
-
             Product product = Product.builder()
                     .category(category)
-                    .quantity(productRequest.getQuantity())
+                    .quantityInStock(productRequest.getQuantity())
                     .productName(productRequest.getProductName())
+                    .description(productRequest.getDescription())
                     .productPrice(productRequest.getProductPrice())
                     .imageUrl(imageUrl)
                     .vendor(vendor)
@@ -75,30 +61,24 @@ public class ProductServiceImpl implements ProductService {
             productRepository.save(product);
             return productToResourceConverter.convert(product) ;
         } catch (Exception e) {
-            log.error(format("An error occurred while uploading product. Please contact support" +
+            log.error(format("An error occurred while uploading product. Please contact support " +
                     "Possible reasons: %s", e.getLocalizedMessage() ));
             throw new ProductServiceException("An error occurred while uploading product. Please contact support");
         }
     }
 
-    @Override
     @Transactional
-    public ProductResource updateProduct(Long productId, ProductRequest productRequest, MultipartFile file) {
+    public ProductResource updateProduct(Long productId, ProductRequest productRequest, MultipartFile file,
+                                         HttpServletRequest httpServletRequest) {
         try {
-            String userEmail = Principal.getLoggedInUserDetails();
-            Product product = productRepository.findByIdAndCategoryId(productId, productRequest.getCategoryId()).orElseThrow(
-                    ()-> new CustomNotFoundException("Product not found")
-            );
-            User vendor = userRepository.findByEmail(userEmail).orElseThrow(
-                    ()-> new UsernameNotFoundException("User with " + userEmail + " not found")
-            );
-            if (vendor.getRole().name().equalsIgnoreCase(UserRole.USER.name())) {
-                throw new Exception("Unauthorised");
-            }
-
+            User vendor = credentialService.getUserAccount(httpServletRequest);
+            credentialService.validateUser(vendor, List.of("VENDOR"));
             String imageUrl = cloudinaryService.uploadImage(file);
+            Product product = productRepository.findByIdAndCategoryId(productId, productRequest.getCategoryId())
+                    .orElseThrow(()-> new CustomNotFoundException("Product not found")
+                    );
             product.setProductName(productRequest.getProductName());
-            product.setQuantity(productRequest.getQuantity());
+            product.setQuantityInStock(productRequest.getQuantity());
             product.setProductPrice(productRequest.getProductPrice());
             product.setImageUrl(imageUrl);
             product.setVendor(vendor);
@@ -111,16 +91,14 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    public PaginatedProductDetailResource getProductsByNameOrPrice(Integer page, Integer size, String productName, BigDecimal productPrice,
-                                                                   HttpServletRequest httpServletRequest) {
+
+    public PaginatedProductDetailResource getProductsByNameOrPrice(
+            Integer page, Integer size, String productName, BigDecimal productPrice,
+            HttpServletRequest httpServletRequest) {
        try {
-//           String userEmail =  credentialService.getUser(httpServletRequest);
-//           User user = userRepository.findUserByEmailAndRole(userEmail, UserRole.USER);
-//           if (user.getRole().name().equalsIgnoreCase(UserRole.VENDOR.name())) {
-//               throw new UnAuthorizedException("Unauthorized access");
-//           }
-           User user = credentialService.getUser(httpServletRequest);
+           User user = credentialService.getUserAccount(httpServletRequest);
+           credentialService.validateUser(user, List.of("USER"));
+
            Page<Product> products = retrieveAllProducts(page, size, productName, productPrice);
 
            List<ProductResource> productDetailResourceList = products.getContent()
@@ -139,14 +117,10 @@ public class ProductServiceImpl implements ProductService {
        }
     }
 
-    @Override
-    public PaginatedProductDetailResource viewAllProducts(Integer page, Integer size) {
+    public PaginatedProductDetailResource viewAllProducts(Integer page, Integer size, HttpServletRequest httpServletRequest) {
         try {
-            String userEmail = Principal.getLoggedInUserDetails();
-            User user = userRepository.findUserByEmailAndRole(userEmail, UserRole.VENDOR);
-            if (user.getRole().name().equalsIgnoreCase(UserRole.USER.name())) {
-                throw new UnAuthorizedException("Unauthorized access");
-            }
+            User user = credentialService.getUserAccount(httpServletRequest);
+            credentialService.validateUser(user, List.of("USER", "VENDOR"));
             Page<Product> products = AllProducts(page, size);
 
             List<ProductResource> productDetailResourceList = products.getContent()

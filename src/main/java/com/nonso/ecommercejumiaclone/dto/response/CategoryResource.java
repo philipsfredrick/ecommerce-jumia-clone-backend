@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.payload.response;
+package com.nonso.ecommercejumiaclone.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

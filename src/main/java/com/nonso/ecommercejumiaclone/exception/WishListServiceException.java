@@ -1,6 +1,6 @@
 package com.nonso.ecommercejumiaclone.exception;
 
-import com.nonso.ecommercejumiaclone.payload.ErrorCode;
+import com.nonso.ecommercejumiaclone.dto.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public class WishListServiceException extends JumiaCloneException {

@@ -1,9 +1,9 @@
 package com.nonso.ecommercejumiaclone.controllers;
 
 import com.google.gson.Gson;
-import com.nonso.ecommercejumiaclone.payload.request.UserSignUpRequest;
-import com.nonso.ecommercejumiaclone.payload.request.VendorSignUpRequest;
-import com.nonso.ecommercejumiaclone.payload.response.RegistrationResponse;
+import com.nonso.ecommercejumiaclone.dto.request.UserSignUpRequest;
+import com.nonso.ecommercejumiaclone.dto.request.VendorSignUpRequest;
+import com.nonso.ecommercejumiaclone.dto.response.RegistrationResponse;
 import com.nonso.ecommercejumiaclone.service.RegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

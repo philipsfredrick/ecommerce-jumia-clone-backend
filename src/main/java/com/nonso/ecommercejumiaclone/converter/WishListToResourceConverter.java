@@ -1,7 +1,7 @@
 package com.nonso.ecommercejumiaclone.converter;
 
 import com.nonso.ecommercejumiaclone.entities.WishList;
-import com.nonso.ecommercejumiaclone.payload.response.WishListResource;
+import com.nonso.ecommercejumiaclone.dto.response.WishListResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.payload;
+package com.nonso.ecommercejumiaclone.dto;
 
 public enum ErrorCode {
 

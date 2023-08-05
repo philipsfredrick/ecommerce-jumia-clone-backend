@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.config.security;
+package com.nonso.ecommercejumiaclone.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,7 +23,6 @@ import static com.nonso.ecommercejumiaclone.utils.GeneralConstants.TOKEN_PREFIX;
 @Component
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-
     private final JwtService jwtService;
     private final AuthUserService authUserService;
 

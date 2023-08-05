@@ -1,13 +1,14 @@
-package com.nonso.ecommercejumiaclone.service.impl;
+package com.nonso.ecommercejumiaclone.service;
 
 import com.nonso.ecommercejumiaclone.converter.CategoryToResourceConverter;
 import com.nonso.ecommercejumiaclone.entities.Category;
+import com.nonso.ecommercejumiaclone.entities.User;
 import com.nonso.ecommercejumiaclone.exception.CustomNotFoundException;
 import com.nonso.ecommercejumiaclone.dto.request.CategoryRequest;
 import com.nonso.ecommercejumiaclone.dto.response.CategoryResource;
 import com.nonso.ecommercejumiaclone.repository.CategoryRepository;
-import com.nonso.ecommercejumiaclone.service.CategoryService;
 import com.nonso.ecommercejumiaclone.utils.CloudinaryService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,17 +23,17 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class CategoryServiceImpl implements CategoryService {
-
-    private final CategoryRepository categoryRepository;
+public class CategoryService {
     private final CloudinaryService cloudinaryService;
+    private final CredentialService credentialService;
+    private final CategoryRepository categoryRepository;
     private final CategoryToResourceConverter categoryToResourceConverter;
 
-    @Override
     @Transactional
-    public CategoryResource createCategory(CategoryRequest categoryRequest, MultipartFile file) {
+    public CategoryResource createCategory(CategoryRequest categoryRequest, MultipartFile file, HttpServletRequest httpServletRequest) {
         try {
-
+            User vendor = credentialService.getUserAccount(httpServletRequest);
+            credentialService.validateUser(vendor, List.of("VENDOR"));
             String imageFile = cloudinaryService.uploadImage(file);
             Category newCategory = Category.builder()
                     .categoryName(categoryRequest.getCategoryName())
@@ -47,16 +48,20 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    @Override
+    @Transactional(readOnly = true)
     public List<CategoryResource> getAllCategories() {
+//        User vendor = credentialService.getUserAccount(httpServletRequest);
+//        credentialService.validateUser(vendor, List.of("VENDOR, USER"));
        List<Category> categoryResources = categoryRepository.findAll();
-       return categoryResources.stream().map(categoryToResourceConverter::convert).collect(toList());
+       return categoryResources.parallelStream().map(categoryToResourceConverter::convert).collect(toList());
     }
 
-    @Override
     @Transactional
-    public CategoryResource updateCategory(Long categoryId, CategoryRequest categoryRequest, MultipartFile file) {
+    public CategoryResource updateCategory(Long categoryId, CategoryRequest categoryRequest,
+                                           MultipartFile file, HttpServletRequest httpServletRequest) {
         try {
+            User vendor = credentialService.getUserAccount(httpServletRequest);
+            credentialService.validateUser(vendor, List.of("VENDOR"));
             Category category = categoryRepository.findById(categoryId).orElseThrow(
                     () -> new CustomNotFoundException("Category not found"));
 
@@ -72,20 +77,19 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    @Override
     public Category findCategoryByName(String categoryName) {
         return categoryRepository.findByCategoryName(categoryName).orElseThrow(
                 ()-> new CustomNotFoundException("Category with name: %s" + categoryName + " does not exist"));
     }
 
-    @Override
     public Category findCategoryById(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(
                 ()-> new CustomNotFoundException("Category for product not found"));
     }
 
-    @Override
-    public void deleteCategoryById(Long categoryId) {
+    public void deleteCategoryById(Long categoryId, HttpServletRequest httpServletRequest) {
+        User vendor = credentialService.getUserAccount(httpServletRequest);
+        credentialService.validateUser(vendor, List.of("VENDOR"));
         categoryRepository.deleteById(categoryId);
     }
 }

@@ -1,7 +1,7 @@
 package com.nonso.ecommercejumiaclone.converter;
 
 import com.nonso.ecommercejumiaclone.entities.Product;
-import com.nonso.ecommercejumiaclone.payload.response.ProductResource;
+import com.nonso.ecommercejumiaclone.dto.response.ProductResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ public class ProductToResourceConverter {
                 .productId(product.getId())
                 .productName(product.getProductName())
                 .imageUrl(product.getImageUrl())
-                .quantity(product.getQuantity())
+                .quantity(product.getQuantityInStock())
                 .productPrice(product.getProductPrice())
                 .categoryId(product.getCategory().getId())
                 .createdAt(product.getCreatedAt())

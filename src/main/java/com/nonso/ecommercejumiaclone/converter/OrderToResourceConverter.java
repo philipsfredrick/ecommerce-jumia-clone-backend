@@ -1,7 +1,7 @@
 package com.nonso.ecommercejumiaclone.converter;
 
 import com.nonso.ecommercejumiaclone.entities.Order;
-import com.nonso.ecommercejumiaclone.payload.response.OrderResource;
+import com.nonso.ecommercejumiaclone.dto.response.OrderResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

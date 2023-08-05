@@ -1,9 +1,9 @@
 package com.nonso.ecommercejumiaclone.controllers;
 
-import com.nonso.ecommercejumiaclone.payload.request.LoginRequest;
-import com.nonso.ecommercejumiaclone.payload.response.AuthenticationResponse;
-import com.nonso.ecommercejumiaclone.service.LoginService;
+import com.nonso.ecommercejumiaclone.dto.request.LoginRequest;
+import com.nonso.ecommercejumiaclone.dto.response.AuthenticationResponse;
 
+import com.nonso.ecommercejumiaclone.service.LoginService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

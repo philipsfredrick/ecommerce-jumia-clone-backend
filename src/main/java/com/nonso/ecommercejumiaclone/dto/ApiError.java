@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.payload;
+package com.nonso.ecommercejumiaclone.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

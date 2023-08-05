@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.payload.response;
+package com.nonso.ecommercejumiaclone.dto.response;
 
 import lombok.*;
 

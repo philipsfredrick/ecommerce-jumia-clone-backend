@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.payload.request;
+package com.nonso.ecommercejumiaclone.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;

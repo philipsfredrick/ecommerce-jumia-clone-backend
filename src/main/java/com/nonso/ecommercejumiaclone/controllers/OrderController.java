@@ -1,6 +1,6 @@
 package com.nonso.ecommercejumiaclone.controllers;
 
-import com.nonso.ecommercejumiaclone.payload.response.OrderResource;
+import com.nonso.ecommercejumiaclone.dto.response.OrderResource;
 import com.nonso.ecommercejumiaclone.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

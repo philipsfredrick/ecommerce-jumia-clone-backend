@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.config.security;
+package com.nonso.ecommercejumiaclone.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 

@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.payload.request;
+package com.nonso.ecommercejumiaclone.dto.request;
 
 import com.nonso.ecommercejumiaclone.entities.CartItem;
 import com.nonso.ecommercejumiaclone.entities.enums.OrderStatus;

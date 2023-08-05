@@ -1,7 +1,7 @@
 package com.nonso.ecommercejumiaclone.exception.handler;
 
 import com.nonso.ecommercejumiaclone.exception.*;
-import com.nonso.ecommercejumiaclone.payload.ErrorCode;
+import com.nonso.ecommercejumiaclone.dto.ErrorCode;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-import static com.nonso.ecommercejumiaclone.payload.ErrorCode.CONSTRAINT_VIOLATION;
+import static com.nonso.ecommercejumiaclone.dto.ErrorCode.CONSTRAINT_VIOLATION;
 
 @ControllerAdvice
 public class JumiaCloneExceptionHandler extends ResponseEntityExceptionHandler {

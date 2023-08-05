@@ -1,7 +1,7 @@
 package com.nonso.ecommercejumiaclone.converter;
 
 import com.nonso.ecommercejumiaclone.entities.CartItem;
-import com.nonso.ecommercejumiaclone.payload.response.CartItemResource;
+import com.nonso.ecommercejumiaclone.dto.response.CartItemResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ public class CartItemToResourceConverter {
                 .id(cartItem.getId())
                 .productName(cartItem.getProduct().getProductName())
                 .imageUrl(cartItem.getProduct().getImageUrl())
-                .price(cartItem.getPrice())
+                .price(cartItem.getUnitPrice())
                 .quantity(cartItem.getQuantity())
                 .build();
     }

@@ -35,23 +35,20 @@ public class CartController {
     @PutMapping("/items")
     public ResponseEntity<CartResource> updateCartItems(
             HttpServletRequest httpServletRequest,
-            @RequestParam(value = "cartItemId") Long cartItemId,
+            @RequestParam(value = "cartItemId") Long cartItemId, @RequestParam(value = "cartId") Long cartId,
             @RequestParam(value = "quantity", defaultValue = "1", required = false) Integer quantity) {
-        return new ResponseEntity<>(cartService.updateCartItems(cartItemId, quantity, httpServletRequest),OK);
+        return new ResponseEntity<>(cartService.updateCartItems(cartItemId, cartId, quantity, httpServletRequest),OK);
     }
 
-    @DeleteMapping("/items/{itemId}")
+    @DeleteMapping("/{cartId}/items/{cartItemId}")
     public ResponseEntity<CartResource> removeItemFromCart(
-            HttpServletRequest httpServletRequest,
-            @PathVariable("itemId") Long cartItemId) {
-        return new ResponseEntity<>(cartService.removeItemFromCart(cartItemId, httpServletRequest), OK);
+            HttpServletRequest httpServletRequest, @PathVariable("cartId") Long cartId,
+            @PathVariable("cartItemId") Long cartItemId) {
+        return new ResponseEntity<>(cartService.removeItemFromCart(cartItemId, cartId, httpServletRequest), OK);
     }
 
-    @GetMapping("/{cartId}/items")
-    public ResponseEntity<List<CartItemResource>> getAllCartItems(
-            HttpServletRequest httpServletRequest,
-            @PathVariable("cartId") Long cartId) {
-        return new ResponseEntity<>(cartService.getAllCartItems(cartId, httpServletRequest), OK);
+    @GetMapping("/items")
+    public ResponseEntity<List<CartItemResource>> getAllCartItems(HttpServletRequest httpServletRequest) {
+        return new ResponseEntity<>(cartService.getAllCartItems(httpServletRequest), OK);
     }
-
 }

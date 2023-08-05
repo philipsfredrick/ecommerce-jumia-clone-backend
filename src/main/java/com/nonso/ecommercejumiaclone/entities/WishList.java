@@ -29,13 +29,13 @@ public class WishList {
     private Long id;
 
     @JsonIgnoreProperties
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "wishlist_product",
         joinColumns = @JoinColumn(name = "wishlist_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
     private Set<Product> products = new HashSet<>();
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

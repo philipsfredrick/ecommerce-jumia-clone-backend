@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.payload.request;
+package com.nonso.ecommercejumiaclone.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +20,9 @@ public class ProductRequest implements Serializable {
     @NotBlank(message = "product name cannot be blank")
     @JsonProperty("product_name")
     private String productName;
+
+    @NotBlank(message = "please add a description for product")
+    private String description;
 
     @NotBlank(message = "please upload product image")
     private String imageUrl;

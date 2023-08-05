@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.config.security;
+package com.nonso.ecommercejumiaclone.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nonso.ecommercejumiaclone.dto.ApiError;

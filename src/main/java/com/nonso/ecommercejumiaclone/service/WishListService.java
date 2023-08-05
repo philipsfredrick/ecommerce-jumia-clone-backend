@@ -1,6 +1,6 @@
-package com.nonso.ecommercejumiaclone.service.impl;
+package com.nonso.ecommercejumiaclone.service;
 
-import com.nonso.ecommercejumiaclone.config.security.Principal;
+import com.nonso.ecommercejumiaclone.security.Principal;
 import com.nonso.ecommercejumiaclone.converter.WishListToResourceConverter;
 import com.nonso.ecommercejumiaclone.entities.*;
 import com.nonso.ecommercejumiaclone.entities.enums.UserRole;
@@ -10,7 +10,6 @@ import com.nonso.ecommercejumiaclone.dto.response.WishListResource;
 import com.nonso.ecommercejumiaclone.repository.ProductRepository;
 import com.nonso.ecommercejumiaclone.repository.UserRepository;
 import com.nonso.ecommercejumiaclone.repository.WishListRepository;
-import com.nonso.ecommercejumiaclone.service.WishListService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,13 +24,12 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class WishListServiceImpl implements WishListService {
+public class WishListService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final WishListRepository wishListRepository;
     private final WishListToResourceConverter wishListToResourceConverter;
 
-    @Override
     @Transactional
     public WishList createWishList() {
         try {
@@ -56,7 +54,6 @@ public class WishListServiceImpl implements WishListService {
         }
     }
 
-    @Override
     @Transactional
     public WishListResource addToWishList(Long productId) {
         try {
@@ -74,7 +71,6 @@ public class WishListServiceImpl implements WishListService {
         }
     }
 
-    @Override
     @Transactional
     public WishListResource removeFromWishList(Long wishListId, Long productId) {
         try {
@@ -92,22 +88,18 @@ public class WishListServiceImpl implements WishListService {
         }
     }
 
-    @Override
     public List<WishListResource> getAllWishListItems(Long userId) {
         List<WishList> wishLists = wishListRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
         return wishLists.parallelStream().map(wishListToResourceConverter::convert).collect(toList());
     }
-    @Override
     public List<WishList> getAllWishlists() {
         return wishListRepository.findAll();
     }
 
-    @Override
     public List<WishList> getWishlistsForUser(Long userId) {
         return wishListRepository.findByUserId(userId);
     }
 
-    @Override
     public void deleteWishlist(Long wishListId) {
         wishListRepository.deleteById(wishListId);
     }

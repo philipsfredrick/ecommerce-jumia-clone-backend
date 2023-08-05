@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.config.security;
+package com.nonso.ecommercejumiaclone.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -39,12 +39,13 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/user/**").hasAuthority("USER")
-                .requestMatchers("/api/v1/vendor/**").hasAuthority("VENDOR")
+//                .requestMatchers("/api/v1/user/**").hasAuthority("USER")
+//                .requestMatchers("/api/v1/vendor/**").hasAuthority("VENDOR")
                 .requestMatchers("/api/v1/orders").hasAuthority("USER")
-                .requestMatchers("/api/v1/products").hasAuthority("VENDOR")
-//                .requestMatchers("/api/v1/products").hasAuthority("USER")
+                .requestMatchers("/api/v1/categories").hasAnyAuthority("VENDOR", "USER")
+                .requestMatchers("/api/v1/products").hasAnyAuthority("VENDOR", "USER")
                 .requestMatchers("/api/v1/cart/**").hasAuthority("USER")
+                .requestMatchers("/api/v1/wishlists").hasAuthority("USER")
                 .anyRequest()
                 .authenticated()
                 .and()

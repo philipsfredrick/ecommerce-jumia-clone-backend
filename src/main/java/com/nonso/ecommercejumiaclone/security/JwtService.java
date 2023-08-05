@@ -1,4 +1,4 @@
-package com.nonso.ecommercejumiaclone.config.security;
+package com.nonso.ecommercejumiaclone.security;
 
 import com.nonso.ecommercejumiaclone.entities.User;
 import io.jsonwebtoken.Claims;
@@ -9,7 +9,6 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -18,10 +17,9 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
 
 import static com.nonso.ecommercejumiaclone.utils.GeneralConstants.*;
-import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -36,12 +34,13 @@ public class JwtService {
     }
 
     public Long getUserIdFromToken(String token) {
-       return parseLong(extractClaim(token, Claims::getId));
+        Claims claims = extractAllClaims(token);
+        return Long.valueOf(claims.get("userId").toString());
     }
 
-    public String getUserAuthoritiesFromToken(String token) {
+    public List getUserAuthoritiesFromToken(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.get("scope").toString();
+        return claims.get("authorities", List.class);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -54,10 +53,11 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, User user) {
-        List<String> scope = user.getAuthorities().stream().map(
+        List<String> authorities = user.getAuthorities().stream().map(
                 GrantedAuthority::getAuthority).collect(toList());
-        extraClaims.put("scope", scope) ;
-        extraClaims.put("userId", user.getId());
+        Long userId = user.getId();
+        extraClaims.put("authorities", authorities) ;
+        extraClaims.put("userId", userId);
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

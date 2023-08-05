@@ -32,15 +32,19 @@ public class CartItem {
     private Integer quantity;
 
     @NotNull(message = "Missing required field price")
-    @Column(name = "price")
-    private BigDecimal price;
+    @Column(name = "unit_price")
+    private BigDecimal unitPrice;
 
-    @ManyToOne(targetEntity = Cart.class, fetch = FetchType.EAGER)
+    @NotNull(message = "Missing required field grandTotal")
+    @Column(name = "sub_total", nullable = false)
+    private BigDecimal subTotal;
+
+    @ManyToOne(targetEntity = Cart.class, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
 
-    @ManyToOne(targetEntity = Product.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Product.class, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
@@ -49,7 +53,6 @@ public class CartItem {
     @JsonManagedReference
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
-
 
     @CreationTimestamp
     @Setter(AccessLevel.NONE)
@@ -64,4 +67,12 @@ public class CartItem {
     @Column(name = "deleted_at")
     @Setter(AccessLevel.NONE)
     private LocalDateTime deletedAt;
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+        this.subTotal = calculateSubTotal();
+    }
+    private BigDecimal calculateSubTotal() {
+        return this.unitPrice.multiply(BigDecimal.valueOf(this.quantity));
+    }
 }

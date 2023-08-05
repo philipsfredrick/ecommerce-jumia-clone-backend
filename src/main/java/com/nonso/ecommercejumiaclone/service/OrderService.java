@@ -1,6 +1,6 @@
-package com.nonso.ecommercejumiaclone.service.impl;
+package com.nonso.ecommercejumiaclone.service;
 
-import com.nonso.ecommercejumiaclone.config.security.Principal;
+import com.nonso.ecommercejumiaclone.security.Principal;
 import com.nonso.ecommercejumiaclone.converter.OrderToResourceConverter;
 import com.nonso.ecommercejumiaclone.entities.*;
 import com.nonso.ecommercejumiaclone.entities.enums.OrderStatus;
@@ -10,7 +10,6 @@ import com.nonso.ecommercejumiaclone.exception.*;
 import com.nonso.ecommercejumiaclone.dto.request.OrderRequest;
 import com.nonso.ecommercejumiaclone.dto.response.OrderResource;
 import com.nonso.ecommercejumiaclone.repository.*;
-import com.nonso.ecommercejumiaclone.service.OrderService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class OrderServiceImpl implements OrderService {
+public class OrderService {
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
@@ -53,7 +52,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    @Override
     @Transactional
     public OrderResource placeOrder() {
         try {
@@ -78,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
             final BigDecimal[] totalAmount = {BigDecimal.ZERO};
 
             cartItems.forEach(cartItem -> {
-                    totalAmount[0] = totalAmount[0].add(cartItem.getPrice());
+                    totalAmount[0] = totalAmount[0].add(cartItem.getUnitPrice());
                 }
             );
 
@@ -101,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
 
     private Transaction createTransactionRecord(CartItem cartItem) {
         return Transaction.builder()
-                .amount(cartItem.getPrice().multiply(valueOf(cartItem.getQuantity())))
+                .amount(cartItem.getUnitPrice().multiply(valueOf(cartItem.getQuantity())))
                 .product(cartItem.getProduct())
                 .quantity((long) cartItem.getQuantity())
                 .vendor(cartItem.getProduct().getVendor())
@@ -109,17 +107,14 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    @Override
     public OrderResource updateOrder(OrderRequest orderRequest) {
         return null;
     }
 
-    @Override
     public void cancelOrder() {
 
     }
 
-    @Override
     public List<OrderResource> getOrdersByUserId(Long userId) {
         List<Order> orders = orderRepository.findByUserId(userId);
         return orders.stream().map(orderToResourceConverter::convert).collect(toList());

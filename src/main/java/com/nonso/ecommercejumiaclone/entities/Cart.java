@@ -34,7 +34,7 @@ public class Cart {
     @Column(name = "grand_total", nullable = false)
     private BigDecimal grandTotal;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonBackReference
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
@@ -56,4 +56,12 @@ public class Cart {
     @Setter(AccessLevel.NONE)
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public void calculateGrandTotal() {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (CartItem item: cartItems) {
+            totalPrice = totalPrice.add(item.getSubTotal());
+        }
+        this.grandTotal = totalPrice;
+    }
 }

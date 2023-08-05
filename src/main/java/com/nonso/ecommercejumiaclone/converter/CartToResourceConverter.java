@@ -1,7 +1,7 @@
 package com.nonso.ecommercejumiaclone.converter;
 
 import com.nonso.ecommercejumiaclone.entities.Cart;
-import com.nonso.ecommercejumiaclone.payload.response.CartResource;
+import com.nonso.ecommercejumiaclone.dto.response.CartResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

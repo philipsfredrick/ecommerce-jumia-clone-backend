@@ -1,6 +1,6 @@
 package com.nonso.ecommercejumiaclone.exception;
 
-import com.nonso.ecommercejumiaclone.payload.ErrorCode;
+import com.nonso.ecommercejumiaclone.dto.ErrorCode;
 
 import java.io.Serial;
 

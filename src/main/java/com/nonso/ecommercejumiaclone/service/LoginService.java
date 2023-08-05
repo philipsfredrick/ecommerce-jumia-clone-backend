@@ -1,20 +1,18 @@
-package com.nonso.ecommercejumiaclone.service.impl;
+package com.nonso.ecommercejumiaclone.service;
 
-import com.nonso.ecommercejumiaclone.config.security.JwtService;
+import com.nonso.ecommercejumiaclone.security.JwtService;
 import com.nonso.ecommercejumiaclone.entities.User;
 import com.nonso.ecommercejumiaclone.entities.enums.UserRole;
 import com.nonso.ecommercejumiaclone.exception.UnAuthorizedException;
 import com.nonso.ecommercejumiaclone.dto.request.LoginRequest;
 import com.nonso.ecommercejumiaclone.dto.response.AuthenticationResponse;
 import com.nonso.ecommercejumiaclone.repository.UserRepository;
-import com.nonso.ecommercejumiaclone.service.LoginService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +22,12 @@ import static java.lang.String.format;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class LoginServiceImpl implements LoginService {
+public class LoginService {
 
+    private final JwtService jwtService;
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
 
-    private final PasswordEncoder passwordEncoder;
-
-
-    @Override
     @Transactional
     public AuthenticationResponse loginUser(LoginRequest loginRequest) {
         try {
@@ -54,7 +48,6 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
-    @Override
     @Transactional
     public AuthenticationResponse loginVendor(LoginRequest loginRequest) {
        try {

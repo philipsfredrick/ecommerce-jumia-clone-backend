@@ -36,30 +36,37 @@ public class Product {
     @Column(name = "product_name", nullable = false)
     private String productName;
 
+    @NotNull(message = "Missing required field product name")
+    @Column(name = "description", nullable = false)
+    private String description;
+
     @NotNull(message = "Missing product logo upload")
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
     @NotNull(message = "Missing required field product quantity")
     @Column(name = "quantity", nullable = false)
-    private Long quantity;
+    private Long quantityInStock;
 
     @NotNull(message = "Missing required field product price")
     @Column(name = "product_price", nullable = false)
     private BigDecimal productPrice;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false)
+
+    private Boolean available;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @JsonManagedReference
     private Category category;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "vendor_id", referencedColumnName = "id")
     @JsonManagedReference
     private User vendor;
 
     @JsonIgnoreProperties
-    @ManyToMany(mappedBy = "products", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<WishList> wishLists = new HashSet<>();
 
     @CreationTimestamp
@@ -75,4 +82,13 @@ public class Product {
     @Setter(AccessLevel.NONE)
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public Product(String productName, String description, String imageUrl, Long quantityInStock, BigDecimal productPrice, Category category) {
+        this.productName = productName;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.quantityInStock = quantityInStock;
+        this.productPrice = productPrice;
+        this.category = category;
+    }
 }

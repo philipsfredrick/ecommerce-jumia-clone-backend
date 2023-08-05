@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#      naming:
+#        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+#    show-sql: false
+#  main:
+#    allow-circular-references: true
+#  h2:
+#    console:
+#      enabled: true
+#    path: /h2
+#  sql:
+#    init:
+#      platform: postgres
+cloud_name: 536781710891Keruod
+api_key: 1233744802idwsjp93kpsdhsk
+api_secret: hjshijjlhjjskkksjbfnwbnkb
+
+jwt:
+  token:
+    secret_key: 6jbdbvzkbjkrwajjhjbrawebhbnbnbsfsf
